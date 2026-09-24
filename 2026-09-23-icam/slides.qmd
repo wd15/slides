@@ -1,9 +1,9 @@
 ---
 title: "Joint State and Parameter Estimation in Additive Manufacturing Digital Twins"
 subtitle: "Integrating high-fidelity models, custom assimilation infrastructure, and scalable workflows"
-author: "<u>Daniel Wheeler</u>, Dilip Banerjee, Shengyen Li (*), Jon Guyer and Andrew Reid"
-institute: 'Materials Measurement Laboratory, NIST | (*) Engineering Laboratory, NIST  <div style="text-align: center; margin-top: 40px;"><img src="nist-logo.png" width="300"></div>'
-date: "07/09/2026"
+author: "<u>Daniel Wheeler^1^</u>, Dilip Banerjee^1^, Shengyen Li^2^, Jon Guyer^1^ and Andrew Reid^1^"
+institute: '^1^Material Measurement Laboratory, NIST | ^2^ Engineering Laboratory, NIST  <div style="text-align: center; margin-top: 40px;"><img src="images/125-NIST-logo-color.png" width="300"></div>'
+date: "09/30/2026"
 format: 
   revealjs:
     theme: [solarized, custom.scss]
@@ -11,147 +11,364 @@ format:
     transition: slide
 ---
 
+
+
+
 ## Background
 
 :::: {.columns}
 
-::: {.column width=50%}
-**The Team:** We transitioned from developing standalone meso-scale modeling
-software (FiPy, OOF, Phase Field codes) to unified focus on the AM Digital Twin
-project for self-correcting microstructure prediction.
+::: {.column width=40%}
 
-**The Effort:** Building self-correcting AM models by using Data Assimilation
-to actively fuse real-time experimental data with physics and AI simulations.
+**The Team**: Transitioned from standalone meso-scale models (FiPy, OOF) to a
+unified focus on AM Digital Twins for microstructure prediction.
 
-**My Background:** Computer Scientist leading NIST's Microstructure-Property
-Tools project. I specialize in HPC PDE solutions and automated / deterministic
-scientific workflows.
+**The Effort**: Building self-correcting AM models by fusing real-time data,
+physics, and AI via Data Assimilation.
+
+**Expertise**: High-fidelity physical modeling, meso-scale physical modeling,
+scientific & HPC computing and building deterministic workflows.
+
 :::
 
-::: {.column width="50%"}
-![]()
+::: {.column width="60%"}
+
+![](images/fe-pf-am.jpg)
+
+<div style="font-size: 0.65em; margin-top: 15px; line-height: 1.3;">
+<b>Multi-Scale Coupling:</b> (a) Melt pool temperature boundaries via 3D
+FEA. (b, d) 2D and 3D Phase Field simulations of cellular microstructures
+generated using extracted $G$ and $R$ values. (c) Experimental validation of
+the predicted cellular morphology. <i>[D. Banerjee] Ghosh et al.,
+Addit. Manuf. (2023)</i> </div>
+
+
 :::
 
 ::::
----
 
-## NIST DT Projects
-
-* **Advanced Manufacturing:** Near real-time factory floor monitoring and AI optimization.[cite: 1]
-* **Antenna Characterization:** Virtual models for advanced wireless and 5G/6G testing.[cite: 1]
-* **Trustworthiness & Security:** Cybersecurity standards and zero-trust verification frameworks.[cite: 1]
-* **Intelligent Buildings (IBAL):** AI-driven simulation for building energy efficiency.[cite: 1]
+::: {.notes}
+* Computer Scientist leading NIST's Microstructure-Property
+* **The physics handoff:** The macro-scale FEA computes the overall thermal field to extract two master variables at the melt pool boundary: G and R.
+* **G (Thermal Gradient):** The steepness of the temperature change at the solid-liquid interface.
+* **R (Solidification Velocity):** The speed at which that interface is moving.
+* **Why they matter:** Their ratio (G/R) dictates the shape of the grains—like the transition from cellular to dendritic—and their product (G×R) gives the cooling rate, dictating the microstructural scale.
+* **The Pivot to DA:** This figure represents state-of-the-art predictive modeling. But it is entirely open-loop. If the actual laser degrades mid-print, the physical G and R change. Our forward model won't know, and the predicted microstructure will be completely wrong. We need data assimilation to anchor these models to reality.
+:::
 
 ---
 
 ## Overview
 
-* **Digital Twins:** The motivation for self-correcting AM systems[cite: 1]
-* **Proposed Architecture**[cite: 1]
-* **Data Assimilation Engine:** Our custom Julia infrastructure[cite: 1]
-* **Workflow Orchestration:** Deterministic execution using Nix, Snakemake, and HPC scaling[cite: 1]
+* **AM Digital Twin Ecosystem at NIST**
+* **Digital Twins:** Concepts
+* **Proposed Digital Twin Architecture:** A framework for continuous state
+  inference
+* **Data Assimilation:** An overview of merging real-time observations with
+  physical forecasts
+* **Julia DA Engine:** An engine that orchestrates a modular, multi-solver
+  pipeline
+* **DA Example:** Demonstrating in-process estimation with
+  AdditiveFOAM
 
 ---
 
-## Models and Digital Twins
+## AM Digital Twin Ecosystem at NIST
 
-**What do we want?**  
-Real-time monitoring (time scale), predictive maintenance, risk-free optimization[cite: 1]
+:::: {.columns}
 
-**How is a DT different?**  
-Continuous data, specific, two-way interaction[cite: 1]
+::: {.column width="50%"}
 
----
+* **AMMT Testbed (Ho Yeung):** Establishing a precision control system for
+  ground-truth in-AM-process data.
+* **Thermodynamics (Fan Zhang):** Predicting local phase evolution and rapid
+  solidification kinetics.
+* **Fatigue (Erik Furton):** Correlating metal AM in-situ pore detection with
+  macroscopic mechanical performance and fatigue life."
+* **In-Process Inference (Our Focus):** Fusing sensor observations with physics
+  forecasts to track the evolving thermal and microstructure state.
 
-## Digital Shadow
+:::
 
-*(Insert image here)*  
-Source: Flexcon (2025). Digital twin vs digital shadow vs digital model: key differences explained.[cite: 1]
+::: {.column width="50%"}
 
----
+![**AMMT Real-Time Control:** An in-line feedback loop dynamically adjusting
+laser power based on high-speed melt pool monitoring.<br><br> [H. Yeung],
+"Toward Real-time Feedback Control for Powder Bed Fusion Additive
+Manufacturing," Additive Manufacturing (2025)](images/ammt.jpg)
 
-## Digital Twins and UQ
+:::
 
-*(Placeholder for UQ Content / Image)*[cite: 1]
+::::
 
----
-
-## The Vision: AM DT Architecture
-
-* **AI Orchestration:** AI agent with MCP controls to get real time state data and set high-level policies[cite: 1]
-* **Data Assimilation:** Ingests observations and forecast to correct state[cite: 1]
-* **Surrogate Acceleration:** FNO bypasses computational heavy PDE solvers[cite: 1]
-* **Optimizer:** Ingests predicted state to compute control parameters[cite: 1]
-* **Controller:** Parameters into actuation (e.g. G-code)[cite: 1]
 
 ---
 
-## Simplified Architecture
+## Digital Twins
 
-*(Placeholder for Architecture Diagram)*[cite: 1]
+![[S. Reich], "Digital Twins: Synergy Between Data Assimilation and Optimal Control," SIAM News (2025)
+](images/digital-twin.jpg){fig-align="center" width="70%"}
+
+<!-- Data Assimilation Box -->
+::: {.absolute .floating-box top="65%" left="4%" style="font-size: 0.5em;"}
+**Inference**
+
+$$ p(X, \theta \mid Y) \propto \underbrace{p(Y \mid X, \theta)}_{\text{min} \|Y - H(X)\|} \, p(X, \theta) $$
+
+:::
+
+<!-- Optiman Control Box -->
+::: {.absolute .floating-box top="65%" left="70%" style="font-size: 0.5em;"}
+**Optimization**
+
+$$ u^* = \arg\min_{u} \mathbb{E}_{X \sim p(X \mid Y)} \big[ C(X, u) \big] $$
+
+:::
+
+::: {.notes}
+
+:::
+---
+
+## Proposed Digital Twin Architecture
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+* **System Goal:** A framework that connects state estimation to physical
+  machine execution.
+* **Our Contribution:** Developing the in-process inference engine using Data
+  Assimilation and FNO surrogates.
+* **The Digital Shadow:** A fully actuated digital twin is a long-term goal. We
+  are currently focusing on the digital shadow that validates our state
+  estimates against experimental data.
+
+:::
+
+::: {.column width="50%"}
+
+![Conceptual data flow for the additive manufacturing digital
+twin.](images/dt-vision-diagram.svg){height="550px"}
+
+:::
+
+::::
 
 ---
 
-## Data Assimilation
+## Data Assimilation: What is it?
 
-*Adapted from Asch, Bocquet, & Nodet, 2016* | *Adapted from Liu et al., 2024*[cite: 1]
+:::: {.columns}
 
-* **Traditional Optimization (past data):** Finds a fixed set of parameters ($\theta$) based on historical data. Focuses on static calibration by assuming the underlying physical model is perfect (offline).[cite: 1]
-* **Active Learning (future data):** Determines exactly which new experimental data points to collect next. Focuses on efficient experiment design to train models with minimal effort (between builds).[cite: 1]
-* **Data Assimilation (present data):** Actively fuses real-time observations with model forecasts to continuously correct the system state ($X$). Focuses on dynamic tracking to realign imperfect models with physical reality (during build).[cite: 1]
+::: {.column width="50%"}
 
-**Considerations:** time scales, latency, noise characterization, model dimensionality[cite: 1]
+* Physical models inevitably drift from reality over time, requiring a way to
+  reconcile them with noisy, sparse sensor data.
+* Real-time observations are dynamically fused with forward physical forecasts.
+* This allows for continuous, on-the-fly correction of both the physical
+  thermal state ($X$) and latent machine parameters ($\theta$) during the
+  build.
 
----
+:::
 
-## Mathematics of Data Assimilation
+::: {.column width="50%"}
+![Demonstration of the digital twin concept in additive manufacturing.](images/da.png)
+:::
 
-To evaluate the assimilation steps during a build:[cite: 1]
 
-1. **Forward Problem**[cite: 1]
-2. **Observation Prediction**[cite: 1]
-3. **Innovation**[cite: 1]
-4. **Analysis Step**[cite: 1]
+::::
 
-$$X_{a} = X_{f} + K(Y - H(X_{f}))$$
-*(Placeholder for mathematical formulation)*
-
----
-
-## Julia DA Infrastructure
-
-* **Native Speed with Python Interop:** Delivers native, C-level execution speeds for DA math, while maintaining seamless PyVista integration for advanced mesh manipulation and visualization.[cite: 1]
-* **Solver-Agnostic Pipeline:** Swaps between AdditiveFOAM, Adamantine, and AI surrogates without rewriting the core assimilation logic.[cite: 1]
-* **HPC Scaling:** Explicitly engineered to manage memory allocations and distributed computing required for high-fidelity ensembles.[cite: 1]
-* **Automated Orchestration:** Programmatically configures, deploys, and manages large parameter sweeps on clusters.[cite: 1]
-
-*Inspired by TorchDA framework*[cite: 1]
+::: {.notes}
+* Explain that we aren't just calibrating after the fact; we are tracking the state as it evolves.
+* Considerations: time scales, latency, noise characterization, model dimensionality.
+:::
 
 ---
 
-## AdditiveFOAM DA Example
+## Data Assimilation: Inference Loop {.smaller}
 
-**Physical Scenario (AdditiveFOAM)**  
-Single-track laser melting on an IN718 substrate[cite: 1]  
-**The Hidden Truth:** Laser power is dynamic—starting at 200W (or 300W) and stepping up to 400W mid-build[cite: 1]
+:::: {.columns}
 
-**Observation Data**  
-* Assimilating both sparse thermal probes and melt pool dimensions[cite: 1]
-* Validating with noisy synthetic data before deploying physical AM-Bench statistics (baby steps)[cite: 1]
+::: {.column width="50%"}
 
-**Objective**  
-* The digital twin starts with a deliberate grossly incorrect guess (e.g., a 100W error)[cite: 1]
-* Calibrate multiple parameters simultaneously, and correct the full 3D thermal field on the fly[cite: 1]
+1. **Forward Forecast:** Advance the physical state using the forward model
+   ($\mathcal{M}$).  $$X_{f} = \mathcal{M}(X_{a}, \theta)$$
+
+2. **Observation Prediction:** Map the forecast state to the sensor space using
+   the observation operator ($\mathcal{H}$).  $$\hat{Y} = \mathcal{H}(X_{f})$$
+
+3. **Innovation (Residual):** Calculate the difference between the true sensor
+   observations ($Y$) and the prediction.  $$v = Y - \hat{Y}$$
+
+4. **Analysis (Update):** Correct the state using the Kalman Gain ($K$) to
+   optimally balance model and sensor uncertainty.  $$X_{a} = X_{f} + K v$$
+
+:::
+
+::: {.column width="50%"}
+![**Ensemble Data Assimilation:** A population of model states (black dots) is forecasted forward in time. When a physical observation occurs (red arrows), the entire ensemble is mathematically updated to form a corrected state estimate.](images/ensemble.png)
+:::
+
+::::
+ 
+---
+
+## Julia DA Engine
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+* **Performance:** Native execution speeds for complex EnKF state-parameter
+  calculations.
+* **Modularity:** A completely solver-agnostic assimilation pipeline.
+* **Scalability:** Automated HPC orchestration for distributed ensemble
+  deployments.
+* **Reproducibility:** Deterministic multi-language environments
+  (Julia/Python/C++) managed via Nix.
+
+
+:::
+
+::: {.column width="60%"}
+
+![](images/julia-da-infrastructure.png){width="100%"}
+
+<div style="font-size: 0.7em; margin-top: 15px; line-height: 1.3;"> The custom
+Julia engine (EnKFOrchestrator.jl) completely decouples the observation data
+and assimilation logic from the forward forecast. This modularity allows us to
+swap between heavy PDE solvers (AdditiveFOAM, Adamantine, ExaCA) and
+lightweight AI surrogates without rewriting the core inference loop.  </div>
+
+:::
+
+::::
+
+
+::: {.notes}
+* The architecture was heavily inspired by the TorchDA framework but
+  purpose-built for the NIST AM ecosystem.
+* Emphasize the Python interop: we get Julia's C-level speed for the math, but
+  seamlessly call PyVista for OpenFOAM mesh manipulation.
+* Explain the HPC scaling: the orchestrator programmatically manages the
+  massive memory overhead of running 50+ concurrent OpenFOAM instances.
+* Nix integration: Emphasize that deploying this many moving parts is only
+  possible because Nix guarantees the environment is exactly the same
+  everywhere.
+:::
+ 
+---
+
+## DA Example: AdditiveFOAM {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Setup (AdditiveFOAM)**
+
+* Single-track laser melt on IN718.
+* True laser power dynamically shifts (300W $\rightarrow$ 400W).
+
+**Assimilated Data**
+
+* Sparse thermal probes (varying sensor densities of 4, 8, 16, 32, or 40 points along the track).
+* Melt pool dimensions.
+
+**Objective: Joint Estimation**
+
+* Initialize the twin with a deliberate 100W error.
+* Recover latent laser power and correct the 3D thermal field on the fly.
+
+:::
+
+::: {.column width="50%"}
+
+<div style="margin-top: -40px;">
+
+![](images/laser_thermal_zoomed_crop.gif){width="80%"}
+
+![](images/fixed-point-temps.png){width="80%"}
+
+<div style="font-size: 0.65em; margin-top: 10px; text-align: center;
+line-height: 1.2;"> <b>Top:</b> Simulated thermal field and probe
+placement. <b>Bottom:</b> Thermal history at two probe locations, comparing the
+true state and uncorrected 100W-offset. </div>
+
+</div>
+
+:::
+
+::::
 
 ---
 
-## DA Example - State Only
+## DA Example: State Only Update
 
-**Setup:** 20-member ensemble assimilates data from 32 thermal probes every 0.0005 s[cite: 1]  
-**Constraint:** temperature state is updated, but the laser power is locked at an incorrect 300 W (ground truth is 400 W)[cite: 1]  
-**Outcome:** Temperature field snaps to reality during assimilation but immediately drifts away[cite: 1]
+:::: {.columns}
 
-*(Insert Image: DA2 (0.001 s) | DA4 (0.002 s) | DA6 (0.003 s) | DA8 (0.004 s))*[cite: 1]
+::: {.column width="50%"}
+
+* **Setup:** 20-member ensemble assimilates data from 32 thermal probes every 0.0005 s.
+* **Constraint:** The temperature state is updated, but the laser power is locked at an
+  incorrect 300 W (True = 400 W).
+* **Outcome:** The temperature field snaps to reality during the assimilation
+  step, but the underlying heat source remains incorrect.
+
+:::
+
+::: {.column width="50%"}
+
+<div style="margin-top: -10px;">
+
+![](images/state-only-posterior-1.png)
+![](images/state-only-posterior-2.png)
+
+<div style="font-size: 0.65em; margin-top: 10px; text-align: center;
+line-height: 1.2;"> <b>Top:</b> DA correction at 0.002 s. <b>Bottom:</b> DA
+correction at 0.004 s. Left panels show the drifting prior; right panels show
+the ensemble snapping to the true 400W state during assimilation.  </div>
+
+</div>
+
+:::
+
+::::
+
+---
+
+## DA Example: State Only Update
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+* **Setup:** 20-member ensemble assimilates data from 32 thermal probes every
+  0.0005 s.
+* **Constraint:** temperature state is updated, but the laser power is locked
+  at an incorrect 300 W (ground truth is 400 W).
+* **Outcome:** Temperature field snaps to reality during assimilation but
+  immediately drifts away.
+
+:::
+
+::: {.column width="50%"}
+
+![](images/state-only-posterior-1.png) <!-- {width="80%"} -->
+![](images/state-only-posterior-2.png) <!-- {width="80%"} -->
+
+<!-- <div style="font-size: 0.65em; margin-top: 10px; text-align: center; -->
+<!-- line-height: 1.2;"> <b>Top:</b> Simulated thermal field and probe -->
+<!-- placement. <b>Bottom:</b> Thermal history at two probe locations, comparing the -->
+<!-- true state and uncorrected 100W-offset. </div> -->
+
+<!-- </div> -->
+
+:::
+
+::::
+
 
 ---
 

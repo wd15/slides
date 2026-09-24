@@ -5,3 +5,12 @@ $presentation-font-size-root: 30px;
 
 // Shrink the slide titles (## Headers)
 $presentation-h2-font-size: 1.5em;
+
+.floating-box {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
+  font-size: 0.75em;
+  border: 2px solid #2ccc; /* Default border color */
+}
