@@ -1,0 +1,13 @@
+# Quarto internal state and cache (matches in any subdirectory)
+.quarto/
+
+# Generated support directories
+*_files/
+
+# Generated HTML artifacts
+*.html
+
+# Quarto project output directories
+_site/
+_book/
+
