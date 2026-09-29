@@ -338,102 +338,230 @@ the ensemble snapping to the true 400W state during assimilation.  </div>
 
 ---
 
-## DA Example: State Only Update
+## DA Example: Joint Update {.smaller}
 
 :::: {.columns}
 
 ::: {.column width="50%"}
 
-* **Setup:** 20-member ensemble assimilates data from 32 thermal probes every
-  0.0005 s.
-* **Constraint:** temperature state is updated, but the laser power is locked
-  at an incorrect 300 W (ground truth is 400 W).
-* **Outcome:** Temperature field snaps to reality during assimilation but
-  immediately drifts away.
+**Setup**
+
+* 32 thermal probes, 20-member ensemble, 0.0005 s assimilation steps.
+
+**Constraint**
+
+* **Joint Update:** The filter is permitted to simultaneously correct both the
+  temperature field and the laser power.
+
+**Outcome**
+
+* **Parameter:** Recovers the 400 W truth. Instabilities due to spatial
+  aliasing between the moving laser, discrete probe locations and DA events.
+* **State:** The underlying heat source is better aligned so the temperature
+  profile maintains better agreement and develops less inter-step drift.
 
 :::
 
 ::: {.column width="50%"}
 
-![](images/state-only-posterior-1.png) <!-- {width="80%"} -->
-![](images/state-only-posterior-2.png) <!-- {width="80%"} -->
+<div style="margin-top: -30px;">
 
-<!-- <div style="font-size: 0.65em; margin-top: 10px; text-align: center; -->
-<!-- line-height: 1.2;"> <b>Top:</b> Simulated thermal field and probe -->
-<!-- placement. <b>Bottom:</b> Thermal history at two probe locations, comparing the -->
-<!-- true state and uncorrected 100W-offset. </div> -->
+![](images/da-temp-profile-joint.png)
+![](images/da-joint-param-32.png){width="75%" fig-align="center"}
 
-<!-- </div> -->
+<div style="font-size: 0.65em; margin-top: 10px; text-align: center; line-height: 1.2;">
+
+<b>Top:</b> Joint update of the temperature field.
+<b>Bottom:</b> Parameter convergence.  </div>
+
+</div>
 
 :::
 
 ::::
 
+---
+
+## DA Example: Sparse Probes {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Setup**
+
+* Joint state-parameter estimation using varying thermal probe densities (4 to
+  40 probes).
+
+**Constraint**
+
+* The filter must overcome spatial sparsity to recover the true 400 W laser
+  power from an incorrect 300 W prior.
+
+**Outcome**
+
+* **Sub-optimal (≤32 probes):** Fails to recover the true power or suffers from
+  volatile spatiotemporal aliasing.
+* **Optimal (40 probes):** Eliminates aliasing and smoothly converges to the
+  400 W truth.
+
+:::
+
+::: {.column width="50%"}
+
+<div style="margin-top: -10px;">
+
+![](images/parameter-convergence-sparse.png)
+
+<div style="font-size: 0.65em; margin-top: 10px; text-align: center; line-height: 1.2;">
+
+<b>Parameter Convergence:</b> The effect of sensor density on recovering the
+true laser power. Densities of 40 probes eliminate spatiotemporal aliasing and
+converge smoothly on the 400 W target.
+
+</div>
+
+</div>
+
+:::
+
+::::
 
 ---
 
-## DA Example - Joint Update
+## DA Example: Geometry Constraints {.smaller}
 
-**Setup:** 32 thermal probes, 20-member ensemble, 0.0005s assimilation steps.[cite: 1]  
-**Action:** Joint State-Parameter update. The filter simultaneously corrects the temperature field and the laser power.[cite: 1]  
-**Outcome:** The model slowly discovers the 400W ground truth, restoring physical coherence and eliminating inter-step drift.[cite: 1]
+:::: {.columns}
 
-*(Insert Image: DA4 (0.002 s) | DA8 (0.004 s))*[cite: 1]
+::: {.column width="50%"}
+
+**Setup**
+
+* Assimilating macroscopic melt pool geometry (length or width) into the
+  filter.
+
+**Constraint**
+
+* Testing if physical geometry constraints can compensate for a complete lack
+  of thermal probe data (0 probes).
+
+**Outcome**
+
+* **Parameter Recovery:** The filter successfully discovers the true 400 W
+  laser power using only geometry constraints, without a single temperature
+  probe in the build.
+* **Shape Capture:** Directly constraining the geometry yields significantly
+  more accurate and stable melt pool dimensions than relying on dense
+  (40-probe) thermal arrays.
+
+:::
+
+::: {.column width="50%"}
+
+<div style="margin-top: -30px;">
+
+![](images/parameter-convergence-geom.png){width="70%" fig-align="center"}
+
+![](images/meltpool-geom.png){width="70%" fig-align="center"}
+
+<div style="font-size: 0.65em; margin-top: -20px; text-align: center; line-height: 1.2;">
+
+<b>Top:</b> Parameter convergence recovering the 400 W truth using 0 probes
+plus geometry. <b>Bottom:</b> Melt pool dimensions tracking over time;
+the geometry-only update outperforms the 40-probe thermal array in capturing
+the true shape.  </div>
+
+</div>
+
+:::
+
+::::
 
 ---
 
-## DA Example - Sparse Probes
+## DA Example: Minimal Geometry Constraints
 
-* **Sparse Arrays (≤8 probes):** Fails to discover the true power or recover the unobserved melt pool geometry.[cite: 1]
-* **Spatiotemporal Aliasing (32 probes):** Volatility may occur when the laser's travel between updates syncs with the probe spacing.[cite: 1]
-* **Optimal Density (40 probes):** Breaks the aliasing pattern, smoothly locks onto the 400W truth, and recovers the full 3D melt pool.[cite: 1]
+:::: {.columns}
 
----
+::: {.column width="50%"}
 
-## DA Example - Geometry Constraints
+**Setup**
 
-Adding melt pool geometry (length, width, depth) stabilizes the filter, allowing sparse arrays (0 probes) to discover truth.[cite: 1]  
-Geometry constraints are a physical anchor even without a single temperature probe in the build.[cite: 1]
+* Assimilating only melt pool length *or* width independently.
 
-Works well with either melt pool length or width only.[cite: 1]
+**Constraint**
 
----
+* Determine the absolute minimum data required to recover the true 400 W laser
+  power.
 
-## DA Example - Geometry Failure Case
+**Outcome**
 
-150W laser fails to exceed the solidus and thus no DA driving force when using only melt pool geometry data.[cite: 1]
+* A single geometric attribute (e.g., width only) is completely sufficient to
+  recover the true power.
 
-*(Insert Images: Geometry only | Geometry plus probes)*[cite: 1]
+:::
 
----
+::: {.column width="50%"}
 
-## Why Nix for Scientific Workflows?
 
-* **Total Reproducibility:** Every dependency—from CUDA libraries to Python wheels—is pinned to a specific hash, ensuring the environment runs identically on a laptop, a workstation, or an HPC cluster.[cite: 1]
-* **Unified Multi-Physics:** Seamlessly bridges disparate ecosystems like AdditiveFOAM (OpenFOAM), Adamantine (C++), and TorchDA (Python/AI) into a single, declarative environment.[cite: 1]
-* **Isolated GPU Management:** Automatically handles host-driver mapping using tools like nixGL, eliminating the manual LD_PRELOAD struggles typical of Linux GPU research.[cite: 1]
-* **Declarative Infrastructure:** Your entire research lab environment is defined in a single `flake.nix` file; spinning up the full project on a new machine takes exactly one command: `nix develop`.[cite: 1]
+![](images/parameter-convergence-geom-only.png){width="100%" fig-align="center"}
+
+<div style="font-size: 0.65em; margin-top: 10px; text-align: center; line-height: 1.2;">
+<b>Parameter Convergence</b>
+</div>
+
+:::
+
+::::
 
 ---
 
 ## Summary
 
-* We are taking deliberate baby steps by validating the core DA engine with synthetic models before scaling up complexity.[cite: 1]
-* Our next major milestone is transitioning to the active assimilation of real-world, noisy experimental data from AM-Bench physical builds.[cite: 1]
-* We plan to expand the framework beyond macro-thermal fields to actively predict and correct local grain structure, texture, and orientation.[cite: 1]
-* We will eventually couple thermal models with microstructure solvers like ExaCA to run a fully unified, multi-scale assimilation loop.[cite: 1]
+* **Foundation Established:** Successfully validated the core Data Assimilation
+  engine using synthetic thermal and geometric models.
+* **Experimental Transition:** Moving to active assimilation of noisy,
+  real-world data using NIST AM-Bench and AMMT data.
+* **Future Work (Microstructural DA):** Integrating solvers like ExaCA into the
+  assimilation loop to actively predict and correct local grain structure and
+  texture.
 
 ---
 
-## Simple DA Example: Cahn Hilliard
+## Postdoc Opportunity: NIST NRC RAP
 
-Cahn Hilliard (Spinodal Decomposition) is a classic equation for understanding phase separation with single parameter.[cite: 1]
+:::: {.columns}
 
-* **Dynamic State Correction:** Continuously "nudges" the digital twin toward physical truth using in-situ data.[cite: 1]
-* **Drift Prevention:** Without DA, incorrect physical parameters lead to exponential error growth and divergent morphologies.[cite: 1]
-* **Sparse Sensing:** Recovers complex global patterns using only 30 point-probes (black crosses).[cite: 1]
-* **Parameter Learning:** Successfully estimates the unknown constant ($\gamma$) in real-time as the system evolves.[cite: 1]
-* Works even without parameter estimation (just state estimation).[cite: 1]
+::: {.column width="60%"}
 
-**Components:** Observation Operator | Forward Model[cite: 1]
+**Digital Twin Framework for Metal AM**
 
+* **Core:** Physics-based models + AI/ML surrogates
+* **Focus:** Uncertainty Quantification (UQ), L-PBF, DED
+* **Location:** NIST Gaithersburg, MD 
+
+:::
+
+::: {.column width="40%"}
+
+<div style="margin-top: 10px; text-align: center;">
+
+**Let's talk.**<br>
+daniel.wheeler@nist.gov<br>
+dilip.banerjee@nist.gov
+
+<br>
+
+![](images/qr-code.png){width="60%" fig-align="center"}
+
+<div style="font-size: 0.7em; margin-top: 10px; line-height: 1.2;">
+RAP Opportunity: <b>50.64.21.C0951</b>
+</div>
+
+</div>
+
+:::
+
+::::
+
+---
