@@ -9,6 +9,7 @@ format:
     theme: [solarized, custom.scss]
     slide-number: true
     transition: slide
+    embed-resources: true
 ---
 
 
@@ -23,8 +24,8 @@ format:
 **The Team**: Transitioned from standalone meso-scale models (FiPy, OOF) to a
 unified focus on AM Digital Twins for microstructure prediction.
 
-**The Effort**: Building self-correcting AM models by fusing real-time data,
-physics, and AI via Data Assimilation.
+**The Effort**: Building self-correcting AM models by fusing real-time data and
+surrogate models using Data Assimilation.
 
 **Expertise**: High-fidelity physical modeling, meso-scale physical modeling,
 scientific & HPC computing and building deterministic workflows.
@@ -564,4 +565,4 @@ RAP Opportunity: <b>50.64.21.C0951</b>
 
 ::::
 
----
+
