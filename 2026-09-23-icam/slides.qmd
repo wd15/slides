@@ -1,8 +1,8 @@
 ---
 title: "Joint State and Parameter Estimation in Additive Manufacturing Digital Twins"
 subtitle: "Integrating high-fidelity models, custom assimilation infrastructure, and scalable workflows"
-author: "<u>Daniel Wheeler^1^</u>, Dilip Banerjee^1^, Shengyen Li^2^, Jon Guyer^1^ and Andrew Reid^1^"
-institute: '^1^Material Measurement Laboratory, NIST | ^2^ Engineering Laboratory, NIST  <div style="text-align: center; margin-top: 40px;"><img src="images/125-NIST-logo-color.png" width="300"></div>'
+author: "[Daniel Wheeler^1^]{.underline}, Dilip Banerjee^1^, Shengyen Li^2^, Jon Guyer^1^ and Andrew Reid^1^"
+institute: '^1^Material Measurement Laboratory, NIST | ^2^ Engineering Laboratory, NIST <div style="display: flex; justify-content: center; align-items: center; gap: 50px; margin-top: 40px;"><img src="images/125-NIST-logo-color.png" width="300"><img src="images/icam-logo.jpg" width="200"></div>'
 date: "09/30/2026"
 format: 
   revealjs:
@@ -12,14 +12,11 @@ format:
     embed-resources: true
 ---
 
-
-
-
 ## Background
 
 :::: {.columns}
 
-::: {.column width=40%}
+::: {.column width="40%"}
 
 **The Team**: Transitioned from standalone meso-scale models (FiPy, OOF) to a
 unified focus on AM Digital Twins for microstructure prediction.
@@ -32,24 +29,35 @@ scientific & HPC computing and building deterministic workflows.
 
 :::
 
+
 ::: {.column width="60%"}
+![**Multi-Scale Coupling:** (a) Melt pool temperature boundaries via 3D FEA. (b, d) 2D and 3D Phase Field simulations of cellular microstructures generated using extracted $G$ and $R$ values. (c) Experimental validation of the predicted cellular morphology.](images/fe-pf-am.jpg)
 
-![](images/fe-pf-am.jpg)
-
-<div style="font-size: 0.65em; margin-top: 15px; line-height: 1.3;">
-<b>Multi-Scale Coupling:</b> (a) Melt pool temperature boundaries via 3D
-FEA. (b, d) 2D and 3D Phase Field simulations of cellular microstructures
-generated using extracted $G$ and $R$ values. (c) Experimental validation of
-the predicted cellular morphology. <i>[D. Banerjee] Ghosh et al.,
-Addit. Manuf. (2023)</i> </div>
-
-
+<div style="font-size: 0.55em; text-align: center; margin-top: 10px; line-height: 1.2; color: #666;">
+<b>Source:</b> [D. Banerjee] Ghosh <em>et al.</em>, <em>Addit. Manuf.</em> (2023).
+</div>
 :::
+
+
+
+<!-- ::: {.column width="60%"} -->
+
+<!-- ![](images/fe-pf-am.jpg) -->
+
+<!-- <div style="font-size: 0.65em; margin-top: 15px; line-height: 1.3;"> -->
+<!-- <b>Multi-Scale Coupling:</b> (a) Melt pool temperature boundaries via 3D -->
+<!-- FEA. (b, d) 2D and 3D Phase Field simulations of cellular microstructures -->
+<!-- generated using extracted $G$ and $R$ values. (c) Experimental validation of -->
+<!-- the predicted cellular morphology. <i>[D. Banerjee] Ghosh et al., -->
+<!-- Addit. Manuf. (2023)</i> </div> -->
+
+
+<!-- ::: -->
 
 ::::
 
 ::: {.notes}
-* Computer Scientist leading NIST's Microstructure-Property
+* Computer Scientist leading NIST's Microstructure-Property tool project
 * **The physics handoff:** The macro-scale FEA computes the overall thermal field to extract two master variables at the melt pool boundary: G and R.
 * **G (Thermal Gradient):** The steepness of the temperature change at the solid-liquid interface.
 * **R (Solidification Velocity):** The speed at which that interface is moving.
@@ -85,20 +93,21 @@ Addit. Manuf. (2023)</i> </div>
 * **Thermodynamics (Fan Zhang):** Predicting local phase evolution and rapid
   solidification kinetics.
 * **Fatigue (Erik Furton):** Correlating metal AM in-situ pore detection with
-  macroscopic mechanical performance and fatigue life."
+  macroscopic mechanical performance and fatigue life.
 * **In-Process Inference (Our Focus):** Fusing sensor observations with physics
   forecasts to track the evolving thermal and microstructure state.
 
 :::
 
+
 ::: {.column width="50%"}
+![**AMMT Real-Time Control:** An in-line feedback loop dynamically adjusting laser power based on high-speed melt pool monitoring.](images/ammt.jpg)
 
-![**AMMT Real-Time Control:** An in-line feedback loop dynamically adjusting
-laser power based on high-speed melt pool monitoring.<br><br> [H. Yeung],
-"Toward Real-time Feedback Control for Powder Bed Fusion Additive
-Manufacturing," Additive Manufacturing (2025)](images/ammt.jpg)
-
+<div style="font-size: 0.55em; text-align: center; margin-top: 10px; line-height: 1.2; color: #666;">
+<b>Source:</b> H. Yeung, "Toward Real-time Feedback Control for Powder Bed Fusion Additive Manufacturing," <em>Additive Manufacturing</em> (2025).
+</div>
 :::
+
 
 ::::
 
@@ -107,8 +116,15 @@ Manufacturing," Additive Manufacturing (2025)](images/ammt.jpg)
 
 ## Digital Twins
 
-![[S. Reich], "Digital Twins: Synergy Between Data Assimilation and Optimal Control," SIAM News (2025)
-](images/digital-twin.jpg){fig-align="center" width="70%"}
+
+![](images/digital-twin.jpg){fig-align="center" width="70%"}
+
+<div style="font-size: 0.55em; text-align: center; margin-top: 10px; line-height: 1.2; color: #666;">
+<b>Source:</b> S. Reich, "Digital Twins: Synergy Between Data Assimilation and Optimal Control," <em>SIAM News</em> (2025).
+</div>
+
+<!-- ![[S. Reich], "Digital Twins: Synergy Between Data Assimilation and Optimal Control," SIAM News (2025) -->
+<!-- ](images/digital-twin.jpg){fig-align="center" width="70%"} -->
 
 <!-- Data Assimilation Box -->
 ::: {.absolute .floating-box top="65%" left="4%" style="font-size: 0.5em;"}
@@ -126,9 +142,6 @@ $$ u^* = \arg\min_{u} \mathbb{E}_{X \sim p(X \mid Y)} \big[ C(X, u) \big] $$
 
 :::
 
-::: {.notes}
-
-:::
 ---
 
 ## Proposed Digital Twin Architecture
@@ -175,8 +188,11 @@ twin.](images/dt-vision-diagram.svg){height="550px"}
 
 ::: {.column width="50%"}
 ![Demonstration of the digital twin concept in additive manufacturing.](images/da.png)
-:::
 
+<div style="font-size: 0.55em; text-align: center; margin-top: 10px; line-height: 1.2; color: #666;">
+<b>Source:</b> Liu <em>et al.</em> (2024). "Deep neural operator enabled digital twin modeling for additive manufacturing." <em>Advances in Computational Science and Engineering</em>
+</div>
+:::
 
 ::::
 
@@ -209,7 +225,16 @@ twin.](images/dt-vision-diagram.svg){height="550px"}
 
 ::: {.column width="50%"}
 ![**Ensemble Data Assimilation:** A population of model states (black dots) is forecasted forward in time. When a physical observation occurs (red arrows), the entire ensemble is mathematically updated to form a corrected state estimate.](images/ensemble.png)
+
+<div style="font-size: 0.55em; text-align: center; margin-top: 10px; line-height: 1.2; color: #666;">
+<b>Source:</b> Cheng <em>et al.</em> (2025) "TorchDA: A Python package for performing data assimilation with deep learning forward and transformation functions."
+</div>
 :::
+
+
+<!-- ::: {.column width="50%"} -->
+<!-- ![**Ensemble Data Assimilation:** A population of model states (black dots) is forecasted forward in time. When a physical observation occurs (red arrows), the entire ensemble is mathematically updated to form a corrected state estimate.](images/ensemble.png) -->
+<!-- ::: -->
 
 ::::
  
@@ -240,7 +265,7 @@ twin.](images/dt-vision-diagram.svg){height="550px"}
 Julia engine (EnKFOrchestrator.jl) completely decouples the observation data
 and assimilation logic from the forward forecast. This modularity allows us to
 swap between heavy PDE solvers (AdditiveFOAM, Adamantine, ExaCA) and
-lightweight AI surrogates without rewriting the core inference loop.  </div>
+lightweight surrogates without rewriting the core inference loop.  </div>
 
 :::
 
@@ -269,7 +294,8 @@ lightweight AI surrogates without rewriting the core inference loop.  </div>
 
 **Setup (AdditiveFOAM)**
 
-* Single-track laser melt on IN718.
+* Single-track laser melt on IN718 adapted from **AMB2018-02-B** single-track
+  tutorial.
 * True laser power dynamically shifts (300W $\rightarrow$ 400W).
 
 **Assimilated Data**
@@ -537,8 +563,7 @@ the true shape.  </div>
 
 **Digital Twin Framework for Metal AM**
 
-* **Core:** Physics-based models + AI/ML surrogates
-* **Focus:** Uncertainty Quantification (UQ), L-PBF, DED
+* Physics-based models + surrogates, DA, UQ, L-PBF, DED
 * **Location:** NIST Gaithersburg, MD 
 
 :::
