@@ -53,5 +53,20 @@ quarto render slides.qmd
 The output will be an HTML file (e.g., `slides.html`) that can be opened
 directly in any modern browser.
 
+### Render to PDF
+
+Make sure your latest slides.html is rendered:
+Bash
+
+    quarto render slides.qmd
+
+Run decktape ephemerally through your Nix flake environment to convert the HTML
+file directly to PDF: Bash
+
+    nix run nixpkgs#decktape -- reveal slides.html slides.pdf
+
+(Note: If you want it to match your exact Quarto slide dimensions, you can pass
+the size flag: `nix run nixpkgs#decktape -- reveal --size 1050x700 slides.html`
+slides.pdf)
 
 ```
