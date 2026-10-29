@@ -1,0 +1,111 @@
+<div style="margin-top: -25px; text-align: center;">
+
+```{.d2 pad="10" width="90%" height="500px"}
+direction: down
+
+# In D2 + quarto-d2, Dagre's inter-rank arrow gap (~60 SVG units) is fixed in
+# internal SVG coordinates. Scaling UP the box dimensions (width/height) and
+# font-size inside D2—while Quarto scales the outer SVG to height="500px"—makes
+# the boxes larger and the arrows proportionally much shorter.
+
+classes: {
+  # 1. Upstream Inputs (Sky Blue)
+  input_db: {
+    shape: cylinder
+    width: 230
+    height: 80
+    style: { fill: "#BAE6FD"; stroke: "#0284C7"; stroke-width: 3; font-size: 22; bold: true }
+  }
+  input_data: {
+    shape: parallelogram
+    width: 240
+    height: 68
+    style: { fill: "#BAE6FD"; stroke: "#0284C7"; stroke-width: 3; font-size: 22 }
+  }
+
+  # 2. Model Setup (Teal)
+  model_spec: {
+    shape: rectangle
+    width: 320
+    height: 66
+    style: { fill: "#99F6E4"; stroke: "#0F766E"; stroke-width: 3; border-radius: 10; font-size: 22; bold: true }
+  }
+
+  # 3. Software & Computational Environment (Warm Berry/Magenta — or use fill: "#CBD5E1"; stroke: "#334155" for Slate Gray)
+  code_env: {
+    shape: rectangle
+    width: 230
+    height: 68
+    style: { fill: "#FBCFE8"; stroke: "#BE185D"; stroke-width: 3; border-radius: 10; font-size: 22 }
+  }
+
+  # 4. Active Execution & Processing Steps (Rich Amber)
+  process_step: {
+    shape: hexagon
+    width: 340
+    height: 74
+    style: { fill: "#FDE68A"; stroke: "#B45309"; stroke-width: 3; font-size: 22; bold: true }
+  }
+
+  # 5. Generated Data & Repository Curation (Emerald Green)
+  output_files: {
+    shape: page
+    width: 280
+    height: 72
+    style: { fill: "#BBF7D0"; stroke: "#15803D"; stroke-width: 3; font-size: 22; bold: true }
+  }
+  curation_repo: {
+    shape: cylinder
+    width: 300
+    height: 80
+    style: { fill: "#86EFAC"; stroke: "#166534"; stroke-width: 3; font-size: 22; bold: true }
+  }
+
+  # 6. Bottleneck Callout (Coral Red)
+  bottleneck: {
+    shape: callout
+    width: 210
+    height: 76
+    style: { fill: "#FECACA"; stroke: "#B91C1C"; stroke-width: 3; font-size: 20; bold: true }
+  }
+}
+
+# Row 1: Upstream Scientific Inputs
+calphad: "CALPHAD\nDatabases" { class: input_db }
+exp: "Experimental\nMeasurements" { class: input_data }
+atomistic: "Atomistic\nSimulations" { class: input_data }
+
+# Left Column: Code & Environment (M3) + Volume Callout
+sim_code: "Solver" { class: code_env }
+comp_env: "Computational\nEnvironment" { class: code_env }
+
+# Main Vertical Spine: Model -> Execution -> Data -> Curation
+prob_spec: "Problem Specification" { class: model_spec }
+comp_model: "Numerical Model" { class: model_spec }
+pf_sim: "Phase-Field Simulation" { class: process_step }
+raw_data: "Raw Field Data" { class: output_files }
+post_proc: "Post-processing" { class: process_step }
+curation: "Curation & Repository" { class: curation_repo }
+
+# Visible Workflow Connections
+calphad -> prob_spec: { style.stroke-width: 3 }
+exp -> prob_spec: { style.stroke-width: 3 }
+atomistic -> prob_spec: { style.stroke-width: 3 }
+
+prob_spec -> comp_model: { style.stroke-width: 3 }
+comp_model -> sim_code: { style.stroke-width: 3 }
+sim_code -> pf_sim: { style.stroke-width: 3 }
+comp_env -> sim_code: { style.stroke-width: 3 }
+
+pf_sim -> raw_data: { style.stroke-width: 3 }
+raw_data -> post_proc: { style.stroke-width: 3 }
+post_proc -> curation: { style.stroke-width: 3 }
+raw_data -> curation: { style.stroke-width: 3 }
+
+# Invisible rank-alignment edges to keep left column tight
+calphad -> sim_code: { style.opacity: 0 }
+sim_code -> comp_env: { style.opacity: 0 }
+```
+
+</div>
+

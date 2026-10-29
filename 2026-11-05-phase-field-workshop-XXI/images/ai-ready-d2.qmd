@@ -1,0 +1,95 @@
+<div style="margin-top: -15px; text-align: center;">
+
+```{.d2 pad="10" width="95%" height="460px"}
+direction: right
+
+classes: {
+  center_hub: {
+    shape: rectangle
+    width: 260
+    height: 130
+    style: {
+      fill: "#1E3A8A"
+      stroke: "#0284C7"
+      stroke-width: 4
+      double-border: true
+      border-radius: 12
+      font-color: "#FFFFFF"
+      font-size: 26
+      bold: true
+    }
+  }
+
+  # Top-Left: Structuring (Teal — matches Model Spec / Schema)
+  pillar_structuring: {
+    shape: rectangle
+    width: 290
+    height: 115
+    style: { fill: "#99F6E4"; stroke: "#0F766E"; stroke-width: 3; border-radius: 10; font-size: 20; bold: true }
+  }
+
+  # Middle-Left: Security (Coral Red — matches Risk Controls)
+  pillar_security: {
+    shape: rectangle
+    width: 290
+    height: 115
+    style: { fill: "#FECACA"; stroke: "#B91C1C"; stroke-width: 3; border-radius: 10; font-size: 20; bold: true }
+  }
+
+  # Bottom-Left: Analysis (Rich Amber — matches Execution & Post-Processing)
+  pillar_analysis: {
+    shape: rectangle
+    width: 290
+    height: 115
+    style: { fill: "#FDE68A"; stroke: "#B45309"; stroke-width: 3; border-radius: 10; font-size: 20; bold: true }
+  }
+
+  # Top-Right: Acquisition (Sky Blue — matches Upstream Inputs)
+  pillar_acquisition: {
+    shape: rectangle
+    width: 290
+    height: 115
+    style: { fill: "#BAE6FD"; stroke: "#0284C7"; stroke-width: 3; border-radius: 10; font-size: 20; bold: true }
+  }
+
+  # Middle-Right: Governance (Emerald Green — matches Curation & Repository)
+  pillar_governance: {
+    shape: rectangle
+    width: 290
+    height: 115
+    style: { fill: "#86EFAC"; stroke: "#166534"; stroke-width: 3; border-radius: 10; font-size: 20; bold: true }
+  }
+
+  # Bottom-Right: Quality (Warm Berry — matches Code, Version Control & Env)
+  pillar_quality: {
+    shape: rectangle
+    width: 290
+    height: 115
+    style: { fill: "#FBCFE8"; stroke: "#BE185D"; stroke-width: 3; border-radius: 10; font-size: 20; bold: true }
+  }
+}
+
+# Left Column (3 Pillars)
+structuring: "STRUCTURING\n───────────────\nSemantics & Labeling\nAnnotations & Provenance" { class: pillar_structuring }
+security: "SECURITY\n───────────────\nPrivacy & Access\nRisks & Controls" { class: pillar_security }
+analysis: "ANALYSIS\n───────────────\nProcessing & Metrics\nVisualization" { class: pillar_analysis }
+
+# Center Hub
+hub: "AI-Ready\nNIST Data" { class: center_hub }
+
+# Right Column (3 Pillars)
+acquisition: "ACQUISITION\n───────────────\nContext & Requirements\nUsage Tracking" { class: pillar_acquisition }
+governance: "GOVERNANCE\n───────────────\nStandards & Regulations\nPolicies & Ethics" { class: pillar_governance }
+quality: "QUALITY\n───────────────\nIntegrity & Version Control\nValidations" { class: pillar_quality }
+
+# Converging Spoke Connections (Left -> Center <- Right)
+structuring -> hub: { style.stroke-width: 3 }
+security -> hub: { style.stroke-width: 3 }
+analysis -> hub: { style.stroke-width: 3 }
+
+hub <- acquisition: { style.stroke-width: 3 }
+hub <- governance: { style.stroke-width: 3 }
+hub <- quality: { style.stroke-width: 3 }
+```
+
+</div>

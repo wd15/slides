@@ -13,18 +13,18 @@ format:
 filters:
   - d2
 d2:
-  layout: elk
+  layout: dagre
   theme: NeutralDefault
 ---
 
 ## Overview
 
-* **The Phase-Field Data Challenge**
+* **Phase-Field Data**
 * **AI Ready Data**
 * **A 5-Level Maturity Ladder**
 * **Reaching Level 3 (RO-Crate & WRROC)**
 * **Defining Level 4 (MatCore-PF)**
-* **Summary**
+* **MatSci-SAM Trial**
 
 ::: {.notes}
 * Frame the talk as an interactive 20-minute overview designed to spark open discussion.
@@ -39,13 +39,13 @@ d2:
 
 ::: {.column width="45%"}
 
-**Why Atomistic & DFT Succeeded First:**
+**Atomistic & DFT Succeeded:**
 
 * Consolidated around a few standard codes (**LAMMPS**, **GROMACS**, **VASP**)
   and community repositories (**NOMAD**, **Materials Project**, **OQMD**,
   **OPTIMADE**).
 
-**Phase-Field Bottlenecks:**
+**Phase-Field Constraints:**
 
 1. **Input Diversity:** CALPHAD databases, experiments, and atomistic inputs
    making it difficult to record provenance.
@@ -56,8 +56,14 @@ d2:
 :::
 
 ::: {.column width="55%"}
-![](images/workflow.png)
+<!-- ![](images/workflow.png) -->
 
+{{< include images/workflow-d2.qmd >}}
+
+<!-- <div style="font-size: 0.55em; text-align: center; margin-top: 6px; line-height: 1.2; color: #666;"> -->
+<!-- <b>Unified Visual Grammar:</b> <b>Blue/Teal</b> = Prospective inputs & model setup; <b>Amber hexagons</b> = Execution & post-processing; <b>Red cylinders</b> = Retrospective data & repository curation. -->
+<!-- </div> -->
+ 
 <div style="font-size: 0.55em; text-align: center; margin-top: 8px; line-height: 1.2; color: #666;">
 <b>Phase-Field Workflow</b>
 </div>
@@ -76,34 +82,29 @@ d2:
 
 :::: {.columns}
 
-::: {.column width="50%"}
+::: {.column width="55%"}
 
-**The Skeptic's Question:**
 *"If LLMs can read arbitrary code and files, why bother with schemas and controlled vocabularies?"*
 
-* **What AI *Does* Replace (Manual Syntax):** Humans should never hand-write 200 lines of JSON-LD or XML. Coding agents can infer and format metadata automatically from scripts and build files.
-* **What AI *Cannot* Replace (Unrecorded Ground Truth):** No LLM can inspect a raw binary `.vtk` array and recover unrecorded physical units, boundary conditions, CALPHAD database versions, or whether an interface width was artificially scaled.
-* **Preventing Silent Semantic Drift:** In phase-field codes, symbols like $W$, $M$, $\kappa$, and $\epsilon$ carry conflicting meanings and units across groups. Controlled vocabularies prevent AI pipelines from silently mixing incompatible physics.
+* Coding agents can infer and format metadata automatically from scripts and build files.
+* No LLM can inspect a raw binary `.vtk` array and recover unrecorded physical units, boundary conditions, CALPHAD database versions.
+* Symbols like $W$, $M$, $\kappa$, and $\epsilon$ carry conflicting meanings and units.
+* Trustworthy AI requires unassailable data; guessing missing context risks corrupting ML surrogates.
 
 :::
 
-::: {.column width="50%"}
+::: {.column width="45%"}
 
-**Pillar Framework for AI-Ready Data:**
-
-1. **Structure:** Explicit semantics, entity relationships, and ontologies (`RO-Crate` / `OntoMS-PF`).
-2. **Acquisition:** Automated capture of prospective and retrospective context at runtime.
-3. **Quality:** Checksums, version control (`git` / `SWHID`), and normative unit validation (`Annex U`).
-4. **Governance:** FAIR licensing (`SPDX`) and persistent identifiers (`DOI`, `ORCID`, `ROR`).
-5. **Analysis & Workflow:** Reproducible execution graphs (`WRROC`) ready for surrogate training (e.g., FNOs) and agentic workflows.
-
-<div style="font-size: 0.6em; margin-top: 15px; padding: 10px; border-left: 4px solid #268bd2; background: rgba(38, 139, 210, 0.08);">
-<b>Core Shift:</b> Schemas are no longer bureaucracy written <em>by</em> humans—they are deterministic contracts <em>between</em> AI agents, solvers, and repositories.
-</div>
+{{< include images/ai-ready-d2.qmd >}}
 
 :::
 
 ::::
+
+<div style="font-size: 0.55em; margin-top: 15px; padding: 10px; border-left: 4px solid #268bd2; background: rgba(38, 139, 210, 0.08);">
+<em>"The key for successful digital metrology and data science is well prepared metadata... Rich metadata captures the proper context of data acquisition and by maintaining detail data provenance it is traceable to its origin and is helpful for the AI models to understand any measurement shifts or any systematic errors."</em>[cite: 2]<br>
+— <a href="https://inet.nist.gov/lp/adlp/rdco/super-intelligence-si-ready-data-aiml-ready-data?check_logged_in=1" style="color: #666; text-decoration: none;">NIST Super Intelligence (SI) Ready Data Guidelines</a>
+</div>
 
 ::: {.notes}
 * Be candid here: if a schema requires researchers to manually fill out giant web forms, it will fail, and AI *should* kill that workflow.
@@ -113,56 +114,18 @@ d2:
 
 ---
 
-## Incremental Progress: 5-Level FAIR Maturity {.smaller}
+## Incremental Progress: 5-Level FAIR Maturity
 
-:::: {.columns}
-
-::: {.column width="45%"}
-
-* **Level 1 (`PDF` — Paper Publication):** Data, workflows, and code described in prose; available only "upon reasonable request."
-* **Level 2 (`GIT` — Open Repository):** Code and data uploaded with a permissive license, but reuse still requires author guidance *(current community baseline)*.
-* **Level 3 (`JSON` — Machine-Actionable Metadata):** Simulation inputs, execution provenance, and outputs packaged in a structured graph (`RO-Crate` + `WRROC`).
-* **Level 4 (`MM` — Minimum Metadata Requirements):** Community-agreed mandatory domain fields and controlled vocabularies (`MatCore-PF`) with FAIR mappings.
-* **Level 5 (`VV` — Automated Verification & Validation):** Executable CI/CD pipelines and repositories (`PFHub`) automatically validate metadata completeness and physical consistency.
-
-:::
-
-::: {.column width="55%"}
-
-```{.d2 width="100%"}
-direction: up
-vars: {
-  d2-config: {
-    layout-engine: elk
-  }
-}
-
-l1: "Level 1 [PDF]: Described in a manuscript (available on request)" {
-  style: { fill: "#F8FAFC"; stroke: "#94A3B8"; border-radius: 6 }
-}
-l2: "Level 2 [GIT]: Openly published in a repository with permissive license (Current Norm)" {
-  style: { fill: "#F1F5F9"; stroke: "#64748B"; border-radius: 6 }
-}
-l3: "Level 3 [JSON]: Annotated with machine-actionable metadata (RO-Crate / WRROC)" {
-  style: { fill: "#DBEAFE"; stroke: "#2563EB"; stroke-width: 2; border-radius: 6; bold: true }
-}
-l4: "Level 4 [MM]: Satisfies community minimum metadata requirements (MatCore-PF)" {
-  style: { fill: "#BFDBFE"; stroke: "#1D4ED8"; stroke-width: 2; border-radius: 6; bold: true }
-}
-l5: "Level 5 [VV]: Automated verification & validation in repository / CI/CD" {
-  style: { fill: "#1E3A8A"; font-color: "#FFFFFF"; stroke: "#1E3A8A"; border-radius: 6; bold: true }
-}
-
-l1 -> l2 -> l3 -> l4 -> l5: "Increasing FAIR Maturity"
-```
-
-<div style="font-size: 0.6em; margin-top: 10px; text-align: center; line-height: 1.2; color: #666;">
-<b>Incremental Roadmap:</b> Rather than demanding a jump straight to full ontological validation (Level 5), this work defines <b>Level 3</b> (via RO-Crate) and lays the foundation for <b>Level 4</b> (via MatCore-PF).
-</div>
-
-:::
-
-::::
+* **Level 1:** Data and code described in prose, available only "upon
+  reasonable request" (PDF).
+* **Level 2:** Code and data open and licensed, but how code was used is
+  unknown (Git repository) *(current baseline)*.
+* **Level 3:** Inputs, provenance, and outputs packaged as a
+  machine-actionable graph (`RO-Crate` + `WRROC`).
+* **Level 4:** Community-agreed mandatory domain fields and controlled
+  vocabularies (`MatCore-PF`).
+* **Level 5:** CI/CD pipelines and repositories automatically validate
+  metadata and physical consistency.
 
 ::: {.notes}
 * Credit Zach Trautt for framing this 5-level maturity staircase.
@@ -171,16 +134,14 @@ l1 -> l2 -> l3 -> l4 -> l5: "Increasing FAIR Maturity"
 
 ---
 
-## Six Metadata Categories (`M1`–`M6`) {.smaller}
+## Six Metadata Categories {.smaller}
 
 :::: {.columns}
 
 ::: {.column width="42%"}
 
-**Prospective vs. Retrospective Split:**
-
-* **Prospective (Blue):** Knowable *before* execution—problem specification, numerical scheme, software environment. Authored or inferred once and reused.
-* **Retrospective (Red):** Capturable only *during/after* execution—timestamps, wall time, memory usage, output file manifests, and checksums. Must be harvested automatically.
+* **Prospective:** Knowable *before* execution—problem specification, numerical scheme, software environment. Authored or inferred once and reused.
+* **Retrospective:** Capturable only *during/after* execution—timestamps, wall time, memory usage, output file manifests, and checksums.
 
 **The Critical Gap:**
 
@@ -191,18 +152,16 @@ l1 -> l2 -> l3 -> l4 -> l5: "Increasing FAIR Maturity"
 
 ::: {.column width="58%"}
 
+::: {style="font-size: 0.8em;"}
 | Category | Representative Standards | Maturity |
 | :--- | :--- | :---: |
-| **M1. Problem Specification** | *None broadly adopted*; domain-specific (`MatCore-PF`, `OntoMS-PF`) | **Low** |
-| **M2. Numerical Solution** | Limited atomistic support (`NOMAD`); *no PDE standard* (`MatCore-PF`) | **Low** |
-| **M3. Comp. Env. & Provenance** | `CodeMeta`, `RO-Crate` (`WRROC`), `W3C PROV`, `FAIR4RS` | **High** |
-| **M4. Dataset Characterization** | `RO-Crate`, `DCAT`, `Data Package`, emerging ML schemas | **Mod–High** |
-| **M5. Resource Identification** | `Schema.org`, `DataCite`, `Dublin Core`, `MatCore Minimal` | **High** |
-| **M6. Funding & Support** | `DataCite`, `Crossref Funder Registry`, `Schema.org` | **High** |
-
-<div style="font-size: 0.6em; margin-top: 12px; text-align: center; color: #666;">
-<b>Modular Architecture:</b> Use <code>RO-Crate / WRROC</code> for the high-maturity scaffolding (M3–M6), and plug in <code>MatCore-PF</code> / <code>OntoMS-PF</code> specifically for M1 and M2.
-</div>
+| **M1. Problem Spec.** | *None*; domain-specific (`MatCore-PF`, `OntoMS-PF`) | **Low** |
+| **M2. Numerical Sol.** | Atomistic only (`NOMAD`); *no PDE standard* | **Low** |
+| **M3. Environment** | `CodeMeta`, `RO-Crate` (`WRROC`), `FAIR4RS` | **High** |
+| **M4. Dataset Char.** | `RO-Crate`, `DCAT`, `Data Package`, ML schemas | **Mod-High** |
+| **M5. Resource ID** | `Schema.org`, `DataCite`, `Dublin Core` | **High** |
+| **M6. Funding** | `DataCite`, `Crossref Funder Registry` | **High** |
+:::
 
 :::
 
@@ -214,82 +173,27 @@ l1 -> l2 -> l3 -> l4 -> l5: "Increasing FAIR Maturity"
 
 :::: {.columns}
 
-::: {.column width="44%"}
+::: {.column width="40%"}
 
 **Why RO-Crate + WRROC?**
 
-* Packages raw data, scripts, and environment files alongside a single `ro-crate-metadata.json` (`JSON-LD` RDF graph).
-* **Process Run Crate Profile:** Ideal for standalone phase-field simulations invoked directly without a heavy workflow engine.
-* **Core `CreateAction` Provenance Node:**
-  * `instrument` $\rightarrow$ Simulation solver / script
-  * `object` $\rightarrow$ Input parameter & config files (`variableMeasured`)
-  * `result` $\rightarrow$ Raw field snapshots & derived stats
-  * `containerImage` / `softwareRequirements` $\rightarrow$ Reproducible environment (`Nix`, Docker)
-  * `resourceUsage` $\rightarrow$ Retrospective runtime telemetry
-
+* Bundles data, code, and environment via a single `ro-crate-metadata.json` (`JSON-LD`).
+* **Process Run Crate Profile:** Lightweight design for standalone phase-field runs
+- **Core `CreateAction` Node:**
+  * `instrument` $\rightarrow$ Solver / script
+  * `object` $\rightarrow$ Input parameters
+  * `result` $\rightarrow$ Raw fields & derived stats
+  * `containerImage` $\rightarrow$ Environment
+  * `resourceUsage` $\rightarrow$ Runtime telemetry
+    
 :::
 
-::: {.column width="56%"}
+::: {.column width="60%"}
 
-```{.d2 width="100%"}
-direction: right
-vars: {
-  d2-config: {
-    layout-engine: elk
-  }
-}
-
-classes: {
-  prospective: {
-    style: {
-      fill: "#DBEAFE"
-      stroke: "#1D4ED8"
-      stroke-width: 2
-      border-radius: 6
-    }
-  }
-  retrospective: {
-    style: {
-      fill: "#FEE2E2"
-      stroke: "#DC2626"
-      stroke-width: 2
-      border-radius: 6
-    }
-  }
-}
-
-prospective_group: Prospective Metadata (Before Run) {
-  style.stroke-dash: 3
-  env: "Comp. Environment\n(@type: SoftwareApplication)" { class: prospective }
-  tool: "Simulation Software\n(@type: SoftwareApplication)" { class: prospective }
-  param: "Parameters\n(@type: PropertyValue)" { class: prospective }
-  input: "Input Files\n(@type: File / Dataset)" { class: prospective }
-  container: "Container / Nix Env\n(@type: ContainerImage)" { class: prospective }
-
-  tool -> env: softwareRequirements
-  input -> param: variableMeasured
-}
-
-retrospective_group: Retrospective Metadata (During / After Run) {
-  style.stroke-dash: 3
-  run: "Computational Execution\n(@type: CreateAction #run-1)" {
-    class: retrospective
-    style.bold: true
-  }
-  output: "Raw & Derived Data\n(@type: File / Dataset)" { class: retrospective }
-  usage: "Runtime Telemetry\n(@type: PropertyValue)" { class: retrospective }
-
-  run -> output: result
-  run -> usage: resourceUsage
-}
-
-retrospective_group.run -> prospective_group.tool: instrument
-retrospective_group.run -> prospective_group.input: object
-retrospective_group.run -> prospective_group.container: containerImage
-```
+![](images/process-run.png){width="100%"}
 
 <div style="font-size: 0.58em; margin-top: 8px; text-align: center; line-height: 1.2; color: #666;">
-<b>Process Run RO-Crate Graph (D2):</b> Prospective entities (blue) are authored or inferred before execution; retrospective entities (red) are harvested automatically upon completion.
+Mapping of the phase-field workflow to the Process Run RO-Crate profile.
 </div>
 
 :::
@@ -298,7 +202,7 @@ retrospective_group.run -> prospective_group.container: containerImage
 
 ---
 
-## FiPy + PFHub Benchmark 8a: 3 Lines of Python {.smaller}
+## FiPy + PFHub Benchmark 8a {.smaller}
 
 :::: {.columns}
 
@@ -355,8 +259,8 @@ wroc.finalize(output_paths=[
 └── ro-crate-metadata.json [JSON-LD Provenance Graph]
 ```
 
-* **Zero Manual JSON-LD:** Inferred directly from `pyproject.toml`, `uv.lock`, `flake.nix`, and `params8a.yaml`.
-* **Built with AI Coding Agents:** Writing custom `ro-crate-py` inference glue for an in-house solver is now a 1-afternoon task with LLM assistance.
+* **JSON-LD inferred** directly from `pyproject.toml`, `uv.lock`, `flake.nix`, and `params8a.yaml`.
+* **Built with AI Coding Agents:** Wrote custom `ro-crate-py` inference glue in a few hours with agent assistance.
 
 :::
 
@@ -369,48 +273,51 @@ wroc.finalize(output_paths=[
 
 ---
 
-## Community Case Studies: Solidification & AM {.smaller}
+## Community Case Studies {.smaller}
 
-:::: {.columns}
+:::: {.columns style="display: flex; gap: 35px;"}
 
-::: {.column width="33%"}
+::: {.column width="31%"}
 
-**1. PRISMS-PF (Post-Run Script)**
-*David Montiel & Katsuyo Thornton (UMich)*
+**1. PRISMS-PF**
+*Post-Run Script (UMich)*
 
-* **Application:** 2D directional solidification of an **Al–Cu alloy** (`deal.II` matrix-free FEM, `p4est` AMR, `MPI`).
-* **Approach:** `prisms-pf_rocrate` + `mcpf` harvest metadata after execution from `parameters.prm`, `CMakeFiles`, runtime logs, and `.vtk`/`.vtu` snapshots.
-* **Repository Link:** Bridges local simulation runs to published **Materials Commons** datasets.
-
-:::
-
-::: {.column width="33%"}
-
-**2. OpenPhase & OPStudio (Native C++)**
-*Marvin Tegeler (OpenPhase Solutions)*
-
-* **Application:** 2D Additive Manufacturing simulation of an **Al–Ni alloy**.
-* **Approach:** Native `MetaData` C++ class (`OPSettings.Meta.WriteJSON`) integrated directly into the solver core and `OPStudio` GUI.
-* **Key Payoff:** Automatically records exact `OPExe` build version, `git` commit hash, start/end timestamps, `.opi` parameters (`#param-dx`), and **SHA-256 checksums** for every output file.
+* **Approach:** Zero changes to the C++ solver; a Python script runs *after* the simulation finishes.
+* **What It Captures:** Parses the input file, build settings, log file, and VTK outputs for **Materials Commons**.
+* **Example:** 2D directional solidification of an **Al–Cu** alloy.
 
 :::
 
-::: {.column width="34%"}
+::: {.column width="31%"}
 
-**3. PACE3D + OntoMS-PF (Ontology)**
-*Hafiz Noman & Michael Selzer (KIT)*
+**2. OpenPhase & OPStudio**
+*Built-In Solver Export (OpenPhase)*
 
-* **Application:** 2D dendritic solidification in **304L stainless steel** (`Fe–Cr–Ni–C`) under plane-strain shear at 1300 °C.
-* **Approach:** Two-step `CreateAction` chain (`SimulationExecution` $\rightarrow$ raw `.p3s` fields $\rightarrow$ `data2vtk.sh` $\rightarrow$ `.vtk`) overlaid with the **OntoMS-PF** OWL ontology, `Metadata4Ing` (`m4i`), and `PMDco`.
-* **Key Payoff:** Every parameter and boundary condition resolves to a formal IRI (`#BWUniCluster`).
+* **Approach:** Metadata export is built directly into the C++ solver and graphical interface.
+* **What It Captures:** Automatically writes the exact software build, Git commit, run time, parameters, and file checksums.
+* **Example:** 2D additive manufacturing of an **Al–Ni** alloy.
+
+:::
+
+::: {.column width="31%"}
+
+**3. PACE3D**
+*Domain Ontology Overlay (KIT)*
+
+* **Approach:** Pairs RO-Crate with a phase-field ontology (**OntoMS-PF**) that gives every input setting a formal, linkable definition.
+* **What It Captures:** Links the simulation run, raw field outputs, and VTK post-processing step into a two-stage provenance chain.
+* **Example:** Dendritic solidification of **304L steel** under shear.
 
 :::
 
 ::::
 
-<div style="font-size: 0.6em; margin-top: 15px; text-align: center; color: #666;">
-<b>Takeaway:</b> Whether wrapped externally in Python (`FiPy`, `PRISMS-PF`), compiled natively in C++ (`OpenPhase`), or paired with an OWL ontology (`PACE3D`), <code>WRROC</code> adapts without disrupting existing solver workflows.
-</div>
+::: {.notes}
+* Each case study shows a different integration strategy from our working group:
+  1. **PRISMS-PF (David Montiel & Katsuyo Thornton):** Post-processing script that harvests metadata after the run is already over—great for legacy or HPC workflows where you don't want to touch the C++ code.
+  2. **OpenPhase (Marvin Tegeler):** Native C++ integration—because the solver itself writes the crate, it automatically stamps the exact Git hash and SHA-256 checksums on every output file.
+  3. **PACE3D (Hafiz Noman & Michael Selzer):** Shows how RO-Crate can carry a formal domain ontology (**OntoMS-PF** = *Ontology for Multi-Scale Phase-Field Simulations*), so a machine knows what a boundary condition or solver tolerance actually means without a human reading the input file.
+:::
 
 ---
 
@@ -418,36 +325,30 @@ wroc.finalize(output_paths=[
 
 :::: {.columns}
 
-::: {.column width="48%"}
+::: {.column width="45%"}
 
 **What is MatCore?**
 
-* An NSF-supported, cross-disciplinary metadata standard for **Computational Materials Science (CMS)** (`matcore.org`).
-* **Implementation-Agnostic (`Section 1.3`):** Defines the logical property hierarchy and controlled vocabularies—can be serialized in XML, YAML, or embedded directly inside `RO-Crate` (`JSON-LD`).
-* **Modular Inheritance Architecture:**
-  * **Minimal MatCore (`Tables Min-1`–`Min-5`):** Universal across all CMS methods.
-  * **Method Extensions:** `MatCore-DFT`, `MatCore-MD`, `MatCore-MBPT`, `MatCore-ML`, **`MatCore-PF`**, and `MatCore-DER` (combinable for multiscale workflows).
+* An NSF-backed community effort ([matcore.org](https://matcore.org)) defining a practical "minimum checklist" for computational materials data.
+* **Shared Core + Extensions:** Every simulation reports a common core, then attaches one or more method extensions (multiscale workflows can combine).
+* **Complements RO-Crate:**
+  * **RO-Crate** = *How files & runs are bundled*
+  * **MatCore** = *What materials & physics terms to record*
 
 :::
 
-::: {.column width="52%"}
-
-**Minimal MatCore Highlights (`Table Min-1`):**
-
-* **`creator*` & `contributor*`:** Supports researchers (`ORCID`), institutions (`ROR`), and **AI / software agents** (e.g., `"Claude Opus 5.5"`, Zenodo DOIs, Software Heritage `SWHID`).
-* **`material*`:** `constituent*` (species & concentration), `phase*` (`Crystal`, `Liquid`, `Amorphous`, etc.), `microstructure`.
-* **`computation*`:**
-  * `method-class*` (MODA: `Electronic`, `Atomistic`, `Mesoscopic`, `Continuum`, `Data-driven`)
-  * `method*` (`PF`, `MD`, `DFT`, `KMC`, `ML`, etc.)
-  * `simulation-conditions*` (`Equilibrium`/`Nonequilibrium`, `temperature`, `stress`, `strain`, `heat-flux`, `temperature-gradient`)
-* **`provenance`:** `event-type*`, `agent*`, and file `checksum` (`SHA-256`).
+::: {.column width="55%"}
+ 
+{{< include images/matcore.qmd >}}
 
 :::
 
 ::::
 
 ::: {.notes}
-* Mention that the MatCore draft went out for community feedback earlier this year and is currently undergoing active revision—so any feedback from CHiMaD XXI today can directly shape the upcoming release!
+* Keep this high-level: MatCore is an umbrella standard across computational materials science so that electronic, atomistic, phase-field, and ML datasets speak the same base language.
+* Highlight the distinction at the bottom of the left column: RO-Crate is the packaging vehicle (the folder and file graph), whereas MatCore provides the domain-specific materials vocabulary that generic web standards like Schema.org don't have.
+* Mention that the initial draft went out for community review and is actively being revised right now.
 :::
 
 ---
