@@ -266,6 +266,10 @@ wroc.finalize(output_paths=[
 
 ::::
 
+<div style="font-size: 0.55em; margin-top: 12px; text-align: center; color: #666;">
+<b>Archived Dataset:</b> D. Wheeler (2026), <em>"Workflow Run RO-Crate for FiPy Execution of PFHub Benchmark 8a"</em> [Dataset], Zenodo, <a href="https://doi.org/10.5281/zenodo.20647927">https://doi.org/10.5281/zenodo.20647927</a>.
+</div>
+
 ::: {.notes}
 * Emphasize the opening sentence of Section 3: "Three added lines of Python turn an existing FiPy script into a self-describing research object."
 * Note that on PFHub today, users only upload `stats.txt` (the derived Avrami curve). Packaging the full RO-Crate on Zenodo preserves the raw `phase_field_*.tar.gz` meshes alongside the exact `flake.nix` environment.
@@ -353,212 +357,58 @@ wroc.finalize(output_paths=[
 
 ---
 
-## MatCore-PF Schema Architecture (D2 ERD) {.smaller}
+## MatCore-PF in Action {.smaller}
 
 :::: {.columns}
-
-::: {.column width="40%"}
-
-**Filling the `M1` & `M2` Gaps:**
-
-* **`Table PF-1` (Top-Level):**
-  * `physical-phenomena*` (Solidification, Sintering, Grain growth, etc.)
-  * `problem-specification*` (`M1`)
-  * `domain-and-mesh` (`M2`)
-  * `numerical-method*` (`M2`)
-  * `variables` (`M1` / `M2`)
-* **`Tables PF-2`–`PF-7` (Sub-Tables):**
-  * Structured sub-objects for governing equations, free-energy functionals, grid spacing, time steps, model parameters, and field variables.
-* **`Annex U` (Normative Units):**
-  * QUDT dimension vectors + CODATA 2022 factors + `x-gnu:` escape hatch.
-
-:::
-
-::: {.column width="60%"}
-
-```{.d2 width="100%"}
-direction: right
-vars: {
-  d2-config: {
-    layout-engine: elk
-  }
-}
-
-pf1: Table PF-1: MatCore-PF Root {
-  shape: sql_table
-  style.fill: "#EBF3FE"
-  physical-phenomena*: "string[] (Directional solidification, ...)"
-  problem-specification*: "SubProperties (M1)"
-  domain-and-mesh: "1D/2D/3D, mesh-type, BCs, ICs (M2)"
-  numerical-method*: "FDM/FEM/FVM/Spectral, solver (M2)"
-  variables: "SubProperties (M1/M2)"
-}
-
-pf2: Table PF-2: governing-equation* {
-  shape: sql_table
-  style.fill: "#E6F4F1"
-  type*: "CH | AC | GP | FID | PFC | Coupled"
-  evolved-variable*: "string (matches field-variable)"
-  driving-energy: "string[] (matches free-energy)"
-}
-
-pf3: Table PF-3: free-energy* {
-  shape: sql_table
-  style.fill: "#E6F4F1"
-  name*: "string (e.g. f_chem, f_total)"
-  description*: "Calphad | Poly | Regular | Ideal"
-  expression: "LaTeX | SymPy | Code snippet"
-  unit: "Annex U / GNU unit"
-}
-
-pf4_5: Tables PF-4 & PF-5: Discretization {
-  shape: sql_table
-  style.fill: "#FEF9C3"
-  grid-spacing: "{name* (dx, min, max), value*, unit*}"
-  time-step-size: "{name* (dt, min, max), value*, unit*}"
-}
-
-pf6_7: Tables PF-6 & PF-7: Variables {
-  shape: sql_table
-  style.fill: "#F3E8FF"
-  model-parameter: "{name*, value*, unit*, description}"
-  field-variable: "{name*, type* (Scalar/Vector/Tensor), unit*}"
-}
-
-pf1.problem-specification* -> pf2
-pf1.problem-specification* -> pf3
-pf1.numerical-method* -> pf4_5
-pf1.variables -> pf6_7
-pf2.driving-energy -> pf3.name*: references
-pf2.evolved-variable* -> pf6_7.field-variable: evolves
-```
-
-<div style="font-size: 0.55em; text-align: center; margin-top: 6px; color: #666;">
-<b>D2 Entity-Relationship Diagram (`shape: sql_table`):</b> Illustrates how `Table PF-1` branches into `Tables PF-2` through `PF-7`.
-</div>
-
-:::
-
-::::
-
----
-
-## MatCore-PF in Action: PFHub Benchmark 8a {.smaller}
-
-:::: {.columns}
-
-::: {.column width="48%"}
-
-**Problem Specification (`JSON-LD` in RO-Crate):**
-
-```json
-"physical-phenomena": ["Isothermal solidification"],
-"problem-specification": {
-  "time-dependence": "Transient evolution",
-  "governing-equation": [{
-    "type": "AC",
-    "evolved-variable": "phi",
-    "driving-energy": ["f_total"]
-  }],
-  "free-energy": {
-    "name": "f_total",
-    "description": "Poly",
-    "expression": "0.5*(nabla phi)^2 + phi^2*(1-phi)^2 - delta_f*phi^3*(10-15*phi+6*phi^2)",
-    "unit": "dimensionless"
-  }
-},
-"domain-and-mesh": {
-  "dimensionality": "2D",
-  "coordinate-system": "Cartesian",
-  "mesh-type": "Regular",
-  "domain-size": [100.0, 100.0],
-  "boundary-conditions": ["Periodic"]
-}
-```
-
-:::
 
 ::: {.column width="52%"}
 
-**Numerical Method & Variables (`Tables PF-4`–`PF-7`):**
+**What MatCore-PF Adds to an RO-Crate:**
 
-```json
-"numerical-method": [{
-  "spatial-discretization": "FVM",
-  "spatial-accuracy-order": 2,
-  "temporal-discretization": "Implicit",
-  "temporal-accuracy-order": 1,
-  "grid-spacing": [
-    {"name": "dx", "value": 1.0, "unit": "dimensionless"},
-    {"name": "dy", "value": 1.0, "unit": "dimensionless"}
+* Focused on **search and discovery**: *What would someone query to find and reuse this simulation?*
+* Keeps **required fields (`*`) minimal** to lower the barrier to entry, with
+  optional blocks for additional details:
+  1. **Physical Phenomena `*`:** *Directional solidification*, *Grain growth*, *Spinodal decomposition*, etc.
+  2. **Problem Specification `*`:** Governing equations (`AC`, `CH`, `GP`) `*` and free-energy model (`Calphad`, `Poly`) `*`
+  3. **Domain & Mesh:** Dimensionality (`1D`/`2D`/`3D`), mesh type (`Regular`, `AMR`), and boundary conditions
+  4. **Numerical Method `*`:** Spatial discretization (`FEM`, `FVM`, `FDM`, `Spectral`) `*`, $\Delta x$, $\Delta t$, and solver
+  5. **Variables:** Field variables ($\phi, c, T$) and model parameters with units
+
+:::
+
+::: {.column width="48%"}
+
+**Declaring `MatCore-PF` in `ro-crate-metadata.json`:**
+
+```{.json code-line-numbers="3-4,18-21"}
+{
+  "@context": [
+    "https://w3id.org/ro/crate/1.2/context",
+    { "matcore": "https://matcore.org/schema/pf/" }
   ],
-  "time-step-size": [
-    {"name": "dt", "value": 0.01, "unit": "dimensionless"}
-  ],
-  "solver": ["FiPy Default Linear Solver"]
-}],
-"variables": {
-  "model-parameter": [
-    {"name": "delta_f", "value": 0.04714, "unit": "dimensionless",
-     "description": "Nucleation driving force (sqrt(2)/30)"},
-    {"name": "r_0", "value": 5.05, "unit": "dimensionless",
-     "description": "Initial diffuse seed radius"}
-  ],
-  "field-variable": [
-    {"name": "phi", "type": "Scalar", "unit": "dimensionless",
-     "description": "Non-conserved order parameter (0=liquid, 1=solid)"}
+  "@graph": [
+    {
+      "@id": "ro-crate-metadata.json",
+      "@type": "CreativeWork",
+      "about": { "@id": "./" },
+      "conformsTo": { "@id": "https://w3id.org/ro/crate/1.2" }
+    },
+    {
+      "@id": "./",
+      "@type": "Dataset",
+      "name": "PFHub Benchmark 8a",
+      "conformsTo": { "@id": "https://w3id.org/ro/wfrun/process/0.4" },
+      "matcore:physical-phenomena": "Isothermal solidification",
+      "matcore:governing-equation": { "type": "AC", "evolved-variable": "phi" },
+      "matcore:free-energy": { "name": "f_total", "description": "Poly" },
+      "matcore:spatial-discretization": "FVM"
+    }
   ]
 }
 ```
 
-:::
-
-::::
-
-<div style="font-size: 0.6em; margin-top: 8px; text-align: center; color: #666;">
-<b>Dataset Source:</b> FiPy Implementation of PFHub Benchmark 8a (Homogeneous Nucleation), Zenodo DOI: <a href="https://zenodo.org/records/7319845">10.5281/zenodo.7319845</a>.
-</div>
-
----
-
-## Summary & Open Discussion: Shaping MatCore-PF {.smaller}
-
-:::: {.columns}
-
-::: {.column width="62%"}
-
-**Where We Need CHiMaD Community Input (Next Revision):**
-
-1. **Multi-Term Free Energies & Auxiliary Functions:**
-   * Should `free-energy*` (`PF-3`) be `Repeatable: True` to match multiple `driving-energy` entries (`f_chem`, `f_elastic`), and should auxiliary `function` definitions (e.g., $g(\phi)$, $p(\phi)$) be restored alongside `model-parameter`?
-2. **Rapid Solidification & AM Couplings:**
-   * What fields are essential for far-from-equilibrium solidification, melt-pool fluid flow, or thermal gradient ($G$) / velocity ($R$) handoffs?
-3. **Controlled Vocabularies vs. Flexibility:**
-   * Where should we enforce strict enums + **Annex U** QUDT units vs. free-form user strings and `x-gnu:` units?
-   * *Bonus:* In `Table Min-1` (MODA), should Phase Field sit under `Mesoscopic` or `Continuum`?
-4. **PFHub & Recommended Practices Integration:**
-   * Can `RO-Crate` + `MatCore-PF` serve as the next-generation submission bundle for PFHub?
-
-:::
-
-::: {.column width="38%"}
-
-<div style="margin-top: 5px; text-align: center;">
-
-**Let's discuss & red-pen the schema!**<br>
-daniel.wheeler@nist.gov<br>
-[https://matcore.org](https://matcore.org)
-
-<br>
-
-![](images/qr-code.png){width="55%" fig-align="center"}
-
-<div style="font-size: 0.65em; margin-top: 10px; line-height: 1.3;">
-<b>Scan to view & comment on:</b><br>
-• MatCore-PF Tables (PF-1 to PF-7)<br>
-• WRROC / RO-Crate Preprint & Examples
-</div>
-
+<div style="font-size: 0.6em; margin-top: 12px; line-height: 1.3; color: #666;">
+<b>Alongside RO-Crate:</b> Add the <code>matcore</code> namespace to <code>@context</code>.
 </div>
 
 :::
@@ -566,10 +416,44 @@ daniel.wheeler@nist.gov<br>
 ::::
 
 ::: {.notes}
-* Leave this slide up during the open discussion.
-* Invite people running AM / rapid solidification codes (PRISMS-PF, OpenPhase, PACE3D, MOOSE, AMReX, etc.) to point out what would break or be awkward when mapping their input files into `PF-1` through `PF-7`.
+* Emphasize how lightweight this is: in JSON-LD, you just add the `matcore` namespace to the `@context` header of your `ro-crate-metadata.json` file, and then you can attach `matcore:` properties right alongside standard RO-Crate provenance.
+* Point out that only a handful of high-level tags (phenomenon, equation type, free-energy type, discretization) are strictly required (`*`), while detailed expressions, grid spacing, and parameter lists are optional.
 :::
 
-chimad_xxi_matcore_slides.qmd
-Displaying chimad_xxi_matcore_slides.qmd.
+---
 
+## Community Review: MatSci-SAM Trial {.smaller}
+
+:::: {.columns}
+
+::: {.column width="55%"}
+
+* Field-by-field review platform via **MatSci-SAM** *(in collaboration with Christopher Rauch, Drexel University)*.
+* **How the Trial Works (`MatCore 0.3.0` Baseline):**
+  1. **Review Field-by-Field:** Jump to any Phase Field entry (e.g., `grid-spacing`, `free-energy`) and mark *Suitable as written* or *Needs revision*.
+  2. **Propose Changes:** Edit definitions or allowed values, attach your rationale and sources, and submit for review.
+  3. **Discuss & Iterate:** Comment on open community proposals (e.g., `boundary-conditions`) to build consensus toward named community releases.
+
+:::
+
+::: {.column width="45%"}
+
+<div style="margin-top: 35px; text-align: center; line-height: 1.6;">
+
+**MatCore Development on MatSci-SAM**
+
+<div style="font-size: 1.25em; font-weight: bold; margin: 20px 0;">
+<a href="https://ego.cci.drexel.edu/" style="color: #268bd2;">ego.cci.drexel.edu</a>
+</div>
+
+<div style="font-size: 0.85em; margin-top: 25px; line-height: 1.5;">
+<b>Want an invite to test it?</b><br>
+daniel.wheeler@nist.gov<br>
+Christopher Rauch: cr625@drexel.edu
+</div>
+
+</div>
+
+<div style="font-size: 0.65em; margin-top: 20px; text-align: center; color: #666;">
+<b>Next:</b> Quick walkthrough of the <em>MatCore in MatSci-SAM</em> onboarding guide &rarr;
+</div>
