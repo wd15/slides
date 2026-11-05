@@ -19,6 +19,7 @@ d2:
 
 ## Overview
 
+* **Background**
 * **Phase-Field Data**
 * **AI Ready Data**
 * **A 5-Level Maturity Ladder**
@@ -29,6 +30,58 @@ d2:
 ::: {.notes}
 * Frame the talk as an interactive 20-minute overview designed to spark open discussion.
 * Emphasize that this combines two closely linked efforts: the MaRDA Phase-Field Schema Working Group paper (focused on practical RO-Crate packaging) and the NSF MatCore-PF standard (focused on minimum domain metadata, currently undergoing revision based on community feedback).
+:::
+
+---
+
+## Lessons From PFHub {.smaller}
+
+:::: {.columns}
+
+::: {.column width="46%"}
+
+**PFHub's Early Schema (2018):**
+
+* Tracked code commits, hardware, and runtime for CHiMaD benchmarks.
+* **Why We Hit a Wall:**
+  1. **Built for Plotting:** Mostly Vega instructions for 1D CSVs on GitHub Gists—raw fields were lost.
+  2. **Implicit Physics:** Relied on `benchmark: id: 3a` instead of recording equations or parameters.
+  3. **Buried Numerics:** Details like `"960x960 grid"` were trapped in free-text strings.
+
+:::
+
+::: {.column width="54%"}
+
+```yaml
+benchmark: { id: 3a, version: '1' }
+data:
+- name: free_energy
+  format: { parse: { free_energy: number, time: number }, type: csv }
+  transform:
+  - { as: x, expr: datum.time, type: formula }
+  - { as: y, expr: datum.free_energy, type: formula }
+  type: line
+  url: https://gist.githubusercontent.com/wd15/.../time.csv
+metadata:
+  author: { first: Daniel, last: Wheeler, github_id: wd15 }
+  hardware: { cpu_architecture: x86_64, cores: '1' }
+  implementation:
+    name: fipy
+    repo: { url: https://gist.github.com/wd15/..., version: fc9134b08a9c }
+  summary: >-
+    FiPy implementation of benchmark 3a on a 960x960 grid.
+  timestamp: 2 February, 2018
+```
+
+:::
+
+::::
+
+::: {.notes}
+* Remind the CHiMaD audience that this whole effort grew directly out of running PFHub starting around 2017–2018.
+* Point to the YAML on the right from Feb 2018 (Benchmark 3a dendritic growth): we actually captured commit hashes (`fc9134b08a9c`) and hardware specs early on.
+* But half the file is Vega plotting code (`datum.free_energy`), the physics is hidden behind `id: 3a`, and the resolution (`960x960 grid`) is buried inside a prose `summary` string.
+* That dead end motivated the 2023 MaRDA working group: separating workflow packaging (RO-Crate) from domain physics and numerics (MatCore-PF).
 :::
 
 ---
@@ -260,7 +313,7 @@ wroc.finalize(output_paths=[
 ```
 
 * **JSON-LD inferred** directly from `pyproject.toml`, `uv.lock`, `flake.nix`, and `params8a.yaml`.
-* **Built with AI Coding Agents:** Wrote custom `ro-crate-py` inference glue in a few hours with agent assistance.
+* **Built with AI Coding Agents:** Wrote custom `ro-crate-py` inference glue in a minutes with agent assistance.
 
 :::
 
@@ -421,6 +474,44 @@ wroc.finalize(output_paths=[
 :::
 
 ---
+
+## Coding Agents & Phase-Field Workflows
+
+:::: {.columns style="display: flex; gap: 35px;"}
+
+::: {.column width="31%"}
+
+**1. Agents Generate Metadata**
+*Solving the Adoption Burden*
+
+* Coding agents write bespoke `RO-Crate` harvesting scripts in minutes.
+* Eliminates manual web forms and hand-written JSON-LD.
+
+:::
+
+::: {.column width="31%"}
+
+**2. Schemas as Guardrails**
+*Preventing Physics Hallucinations*
+
+* Agents chaining simulations or training surrogates cannot guess implicit units or equations.
+* `MatCore-PF` provides a deterministic contract for automated validation (**Level 5**).
+
+:::
+
+::: {.column width="31%"}
+
+**3. Tracking Autonomous Runs**
+*Avoiding a Data Swamp*
+
+* Agentic workflows can launch hundreds of code variations and parameter sweeps.
+* `WRROC` + `MatCore` log the exact Git commit, `flake.nix` environment, and AI agent identity on every run.
+
+:::
+
+::::
+
+--- 
 
 ## Community Review: MatSci-SAM Trial {.smaller}
 
